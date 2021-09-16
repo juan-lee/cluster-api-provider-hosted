@@ -24,7 +24,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	controlplanev1alpha4 "github.com/juan-lee/cluster-api-provider-hosted/api/v1alpha4"
+	controlplanev1alpha4 "github.com/juan-lee/cluster-api-provider-hosted/controlplane/hosted/api/v1alpha4"
 )
 
 // HostedControlPlaneReconciler reconciles a HostedControlPlane object

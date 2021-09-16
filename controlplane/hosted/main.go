@@ -31,8 +31,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
-	controlplanev1alpha4 "github.com/juan-lee/cluster-api-provider-hosted/api/v1alpha4"
-	"github.com/juan-lee/cluster-api-provider-hosted/controllers"
+	controlplanev1alpha4 "github.com/juan-lee/cluster-api-provider-hosted/controlplane/hosted/api/v1alpha4"
+	"github.com/juan-lee/cluster-api-provider-hosted/controlplane/hosted/controllers"
 	//+kubebuilder:scaffold:imports
 )
 
