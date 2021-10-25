@@ -24,15 +24,17 @@ import (
 	// to ensure that exec-entrypoint and run can make use of them.
 	_ "k8s.io/client-go/plugin/pkg/client/auth"
 
+	controlplanev1alpha4 "github.com/juan-lee/cluster-api-provider-hosted/controlplane/hosted/api/v1alpha4"
+	"github.com/juan-lee/cluster-api-provider-hosted/controlplane/hosted/controllers"
 	"k8s.io/apimachinery/pkg/runtime"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
+	clusterv1alpha4 "sigs.k8s.io/cluster-api/api/v1alpha4"
+	kubeadmbootstrapv1 "sigs.k8s.io/cluster-api/bootstrap/kubeadm/api/v1alpha4"
 	ctrl "sigs.k8s.io/controller-runtime"
+	"sigs.k8s.io/controller-runtime/pkg/controller"
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
-
-	controlplanev1alpha4 "github.com/juan-lee/cluster-api-provider-hosted/controlplane/hosted/api/v1alpha4"
-	"github.com/juan-lee/cluster-api-provider-hosted/controlplane/hosted/controllers"
 	//+kubebuilder:scaffold:imports
 )
 
@@ -43,6 +45,9 @@ var (
 
 func init() {
 	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
+
+	utilruntime.Must(clusterv1alpha4.AddToScheme(scheme))
+	utilruntime.Must(kubeadmbootstrapv1.AddToScheme(scheme))
 
 	utilruntime.Must(controlplanev1alpha4.AddToScheme(scheme))
 	//+kubebuilder:scaffold:scheme
@@ -78,10 +83,11 @@ func main() {
 		os.Exit(1)
 	}
 
+	ctx := ctrl.SetupSignalHandler()
+
 	if err = (&controllers.HostedControlPlaneReconciler{
 		Client: mgr.GetClient(),
-		Scheme: mgr.GetScheme(),
-	}).SetupWithManager(mgr); err != nil {
+	}).SetupWithManager(ctx, mgr, controller.Options{}); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "HostedControlPlane")
 		os.Exit(1)
 	}
@@ -97,7 +103,7 @@ func main() {
 	}
 
 	setupLog.Info("starting manager")
-	if err := mgr.Start(ctrl.SetupSignalHandler()); err != nil {
+	if err := mgr.Start(ctx); err != nil {
 		setupLog.Error(err, "problem running manager")
 		os.Exit(1)
 	}

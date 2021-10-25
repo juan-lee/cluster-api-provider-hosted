@@ -18,24 +18,26 @@ package v1alpha4
 
 import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	cabpkv1 "sigs.k8s.io/cluster-api/bootstrap/kubeadm/api/v1alpha4"
 )
 
-// EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
-// NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
+// HostedControlPlaneFinalizer is the finalizer applied to HostedControlPlane resources
+// by its managing controller.
+const HostedControlPlaneFinalizer = "hosted.controlplane.cluster.x-k8s.io"
 
 // HostedControlPlaneSpec defines the desired state of HostedControlPlane
 type HostedControlPlaneSpec struct {
-	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
-
-	// Foo is an example field of HostedControlPlane. Edit hostedcontrolplane_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+	// KubeadmConfigSpec is a KubeadmConfigSpec
+	// to use for initializing and joining machines to the control plane.
+	KubeadmConfigSpec cabpkv1.KubeadmConfigSpec `json:"kubeadmConfigSpec"`
 }
 
 // HostedControlPlaneStatus defines the observed state of HostedControlPlane
 type HostedControlPlaneStatus struct {
-	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
+	// Ready denotes that the HostedControlPlane API Server is ready to
+	// receive requests.
+	// +optional
+	Ready bool `json:"ready"`
 }
 
 //+kubebuilder:object:root=true
